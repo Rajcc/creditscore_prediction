@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Your Credit Score</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .model-selector {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .model-selector h3 {
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .model-info {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .model-card {
+            flex: 1;
+            max-width: 200px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .model-card h4 {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .model-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .predict-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .predict-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .score-category {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            color: white;
+            display: inline-block;
+        }
+
+        .excellent { background: #4caf50; }
+        .good { background: #8bc34a; }
+        .fair { background: #ff9800; }
+        .poor { background: #f44336; }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Credit Score Predictor</h1>
+        
+        <div class="model-selector">
+            <h3>🤖 AI Predictor</h3>
+            <p style="color: white; text-align: center; margin-bottom: 15px; font-size: 0.9rem;">
+                Advanced machine learning model for accurate credit score prediction
+            </p>
+            <div class="model-info">
+                <div class="model-card">
+                    <h4>Credit Score</h4>
+                    <p>Intelligent Analysis</p>
+                </div>
+            </div>
+        </div>
+        
+        <form action="/predict" method="POST" id="creditForm">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="Annual_Income">Annual Income ($)</label>
+                <input type="number" id="Annual_Income" name="Annual_Income" required min="0" placeholder="e.g., 50,000">
+            </div>
+            
+            <div class="form-group">
+                <label for="Num_Credit_Card">Number of Credit Cards</label>
+                <input type="number" id="Num_Credit_Card" name="Num_Credit_Card" required min="0" max="50" placeholder="e.g., 5">
+            </div>
+        </div>
+        <div class="form-row">   
+            <div class="form-group">
+                <label for="Num_of_Loan">Number of Loans</label>
+                <input type="number" id="Num_of_Loan" name="Num_of_Loan" required min="0" placeholder="e.g., 2">
+            </div>
+            
+            <div class="form-group">
+                <label for="interestrate">Total interest rate on loans (%)</label>
+                <input type="number" id="Interest_Rate" name="Interest_Rate" required min="0" placeholder="e.g., 5">
+            </div>
+        </div>
+        <div class="form-row">    
+            <div class="form-group">
+                <label for="changed_credit_limit">Credit Limit </label>
+                <input type="number" id="Changed_Credit_Limit" name="Changed_Credit_Limit" required min="0" placeholder="e.g., 100,000">
+            </div>
+            
+            <div class="form-group">
+                <label for="Outstanding_debt">Outstanding Debt </label>
+                <input type="number" id="Outstanding_Debt" name="Outstanding_Debt" required min="0" step="0.01" placeholder="e.g., 15,000">
+            </div>
+        </div>
+        <div class="form-row">    
+            
+            <div class="form-group">
+                <label for="Credit_card_history">Credit History (Months)</label>
+                <input type="number" id="Credit_History_Age" name="Credit_History_Age" required min="0" step="0.01" placeholder="e.g., 30 (2.5 years)">
+            </div>
+            
+            <div class="form-group">
+                <label for="Amount_invested_monthly">Monthly Investment </label>
+                <input type="number" id="Amount_invested_monthly" name="Amount_invested_monthly" required min="0" step="0.01" placeholder="e.g., 10,000">
+            </div>
+        </div>
+        <div class="form-row">   
+            <div class="form-group">
+                <label for="Monthly_Balance">Monthly Balance </label>
+                <input type="number" id="Monthly_Balance" name="Monthly_Balance" required min="0" step="0.01" placeholder="e.g., 25,000">
+            </div>
+            
+            <div class="form-group">
+                <label for="Monthly_Inhand_Salary">Monthly In-hand Salary </label>
+                <input type="number" id="Monthly_Inhand_Salary" name="Monthly_Inhand_Salary" required min="0" step="0.01" placeholder="e.g., 50,000">
+            </div>
+        </div>
+        <div class="form-row">   
+            <div class="form-group">
+                <label for="Delay_from_due_date">Delay in emi payments (days)</label>
+                <input type="number" id="Delay_from_due_date" name="Delay_from_due_date" required min="0" step="0.01" placeholder="e.g., 2,3">
+            </div>
+            
+            <div class="form-group">
+                <label for="Total_EMI_per_month">Total EMI per month </label>
+                <input type="number" id="Total_EMI_per_month" name="Total_EMI_per_month" required min="0" placeholder="e.g., 5000">
+            </div>
+        </div>
+        <div class="form-row">   
+            <div class="form-group">
+                <label for="Num_of_Delayed_Payment">Num of Delayed Payment</label>
+                <input type="number" id="Num_of_Delayed_Payment" name="Num_of_Delayed_Payment" required min="0" step="0.01" placeholder="e.g., 2,3">
+            </div>
+            <div class="form-group">
+                <label for="Num_Credit_Inquiries">Num of credit inquiries</label>
+                <input type="number" id="Num_Credit_Inquiries" name="Num_Credit_Inquiries" required min="0" step="0.01" placeholder="e.g., 2,3">
+            </div>
+        </div>         
+
+            <button type="submit" class="predict-btn">🔮 Predict Credit Score</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing your financial data...</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="score" id="scoreValue">{{scoreValue}}</div>
+            <div class="score-label">Predicted Credit Score</div>
+            <div class="score-category" id="scoreCategory">{{scoreCategory}}</div>
+            <div id="predictionDetails" style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px;">
+                <p id="modelUsed" style="color: #333; font-weight: 600; margin-bottom: 8px;">AI Model Analysis Complete</p>
+                <div id="modelComparison" style="color: #666; font-size: 0.9rem;">
+                    <p id="model1Result">Financial profile analyzed</p>
+                    <p id="model2Result">Credit factors evaluated</p>
+                    <p id="finalDecision" style="font-weight: 600; margin-top: 8px; color: #333;">Score calculated based on comprehensive analysis</p>
+                </div>
+            </div>
+        </div>   
+    </div>
+
+    <script>
+        document.getElementById('creditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            const formdata=new FormData(this);
+            fetch('/predict',{
+                method:'POST',
+                body: formdata
+
+            })
+            .then (response=> response.json())
+            .then(data=>{
+                
+                // Display results
+                document.getElementById('scoreValue').textContent = data.scoreValue;
+                document.getElementById('scoreCategory').textContent = data.ScoreCategory;
+                 let catClass = '';
+                if (data.scoreCategory === 'GOOD') catClass = 'good';
+                else if (data.scoreCategory === 'POOR') catClass = 'poor';
+                document.getElementById('scoreCategory').className = 'score-category ' + catClass;
+                
+                // Hide loading and show result
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                
+            });
+         });
+    </script> 
+</body>
+</html>
