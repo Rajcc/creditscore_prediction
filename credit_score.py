@@ -46,14 +46,17 @@ def predict():
             score =600
             score=apply_penalties(score,numofdelayedpayments,numofcreditinquiry,delayfromduedate,numofcreditcard,outstandingdebt)
             score=max(score,300)
-            category="POOR"
+            
             
         elif pd==1:
             score=750
             score=apply_penalties(score,numofdelayedpayments,numofcreditinquiry,delayfromduedate,numofcreditcard,outstandingdebt)
             score= max(score,500)
-            category="GOOD"
             
+        if score<=580:
+            category="POOR"
+        elif score>580: 
+            category="GOOD"       
         return jsonify({'scoreValue':score,'scoreCategory':category})
     except Exception as e:
         score="N/A"

@@ -217,14 +217,14 @@
         <h1>Credit Score Predictor</h1>
         
         <div class="model-selector">
-            <h3>🤖 AI Predictor</h3>
+            <h3>🤖 </h3>
             <p style="color: white; text-align: center; margin-bottom: 15px; font-size: 0.9rem;">
-                Advanced machine learning model for accurate credit score prediction
+                machine learning model for credit score prediction
             </p>
             <div class="model-info">
                 <div class="model-card">
                     <h4>Credit Score</h4>
-                    <p>Intelligent Analysis</p>
+                    <p> Probability Analysis</p>
                 </div>
             </div>
         </div>
@@ -288,7 +288,7 @@
         </div>
         <div class="form-row">   
             <div class="form-group">
-                <label for="Delay_from_due_date">Delay in emi payments (days)</label>
+                <label for="Delay_from_due_date"> EMI Delay from due date (days)</label>
                 <input type="number" id="Delay_from_due_date" name="Delay_from_due_date" required min="0" step="0.01" placeholder="e.g., 2,3">
             </div>
             
@@ -321,7 +321,7 @@
             <div class="score-label">Predicted Credit Score</div>
             <div class="score-category" id="scoreCategory">{{scoreCategory}}</div>
             <div id="predictionDetails" style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px;">
-                <p id="modelUsed" style="color: #333; font-weight: 600; margin-bottom: 8px;">AI Model Analysis Complete</p>
+                <p id="modelUsed" style="color: #333; font-weight: 600; margin-bottom: 8px;">Probability Analysis Complete</p>
                 <div id="modelComparison" style="color: #666; font-size: 0.9rem;">
                     <p id="model1Result">Financial profile analyzed</p>
                     <p id="model2Result">Credit factors evaluated</p>
@@ -349,11 +349,11 @@
                 
                 // Display results
                 document.getElementById('scoreValue').textContent = data.scoreValue;
-                document.getElementById('scoreCategory').textContent = data.ScoreCategory;
+                document.getElementById('scoreCategory').textContent = data.scoreCategory;
                  let catClass = '';
-                if (data.scoreCategory === 'GOOD') catClass = 'good';
-                else if (data.scoreCategory === 'POOR') catClass = 'poor';
-                document.getElementById('scoreCategory').className = 'score-category ' + catClass;
+                if (data.scoreCategory === 'GOOD') catClass = 'Good';
+                else if (data.scoreCategory === 'POOR') catClass = 'Poor';
+                document.getElementById('scoreCategory').className = 'scoreCategory ' + catClass;
                 
                 // Hide loading and show result
                 document.getElementById('loading').style.display = 'none';
